@@ -1,6 +1,7 @@
-// src/components/PieceSelectors.tsx
-import { useState } from "react";
-import { Piece } from "../../../types/Piece";
+import { useEffect } from 'react';
+import { Piece } from '../../../types/Piece';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setSelectedPiece, setPieceLevel } from '../../../store/piecesSlice';
 
 interface PieceSelectorProps {
   slot: string;
@@ -8,28 +9,35 @@ interface PieceSelectorProps {
 }
 
 const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
-  const [selectedPiece, setSelectedPiece] = useState<Piece>(pieces[0]);
-  const [level, setLevel] = useState<number>(0);
+  const dispatch = useAppDispatch();
+  const selected = useAppSelector(state => state.pieces[slot]);
+
+  useEffect(() => {
+    if (!selected && pieces.length > 0) {
+      dispatch(setSelectedPiece({ slot, piece: pieces[0] }));
+    }
+  }, [dispatch, pieces, selected, slot]);
 
   const handlePieceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = pieces.find((piece) => piece.name === event.target.value);
-    if (selected) {
-      setSelectedPiece(selected);
-      setLevel(0); // Reset level when switching pieces
+    const selectedPiece = pieces.find(p => p.name === event.target.value);
+    if (selectedPiece) {
+      dispatch(setSelectedPiece({ slot, piece: selectedPiece }));
     }
   };
 
   const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let newLevel = parseInt(event.target.value, 10);
-    if (isNaN(newLevel) || newLevel < 0 || newLevel > 11) return;
-    setLevel(newLevel);
-    selectedPiece.updateStats(newLevel);
+    const level = parseInt(event.target.value, 10);
+    if (!isNaN(level) && level >= 0 && level <= 11) {
+      dispatch(setPieceLevel({ slot, level }));
+    }
   };
+
+  if (!selected) return null;
 
   return (
     <div>
       <h2>{slot}</h2>
-      <select onChange={handlePieceChange} value={selectedPiece.name}>
+      <select onChange={handlePieceChange} value={selected.piece.name}>
         {pieces.map((piece) => (
           <option key={piece.name} value={piece.name}>
             {piece.name}
@@ -37,22 +45,22 @@ const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
         ))}
       </select>
       <div>
-        <h3>{selectedPiece.name}</h3>
-        <p>Set: {selectedPiece.set}</p>
-        <p>Slot: {selectedPiece.slot}</p>
-        <p>Main Stat: {selectedPiece.mainstat}</p>
-        <p>Fresh: {selectedPiece.fresh.toFixed(0)}</p>
-        <p>Sweet: {selectedPiece.sweet.toFixed(0)}</p>
-        <p>Cool: {selectedPiece.cool.toFixed(0)}</p>
-        <p>Sexy: {selectedPiece.sexy.toFixed(0)}</p>
-        <p>Elegant: {selectedPiece.elegant.toFixed(0)}</p>
-        <p>Tags: {selectedPiece.tags.join(", ") || "None"}</p>
-        <p>Level: {level}</p>
+        <h3>{selected.piece.name}</h3>
+        <p>Set: {selected.piece.set}</p>
+        <p>Slot: {selected.piece.slot}</p>
+        <p>Main Stat: {selected.piece.mainstat}</p>
+        <p>Fresh: {selected.piece.fresh.toFixed(0)}</p>
+        <p>Sweet: {selected.piece.sweet.toFixed(0)}</p>
+        <p>Cool: {selected.piece.cool.toFixed(0)}</p>
+        <p>Sexy: {selected.piece.sexy.toFixed(0)}</p>
+        <p>Elegant: {selected.piece.elegant.toFixed(0)}</p>
+        <p>Tags: {selected.piece.tags.join(", ") || "None"}</p>
+        <p>Level: {selected.level}</p>
         <input
           type="number"
           min="0"
           max="11"
-          value={level}
+          value={selected.level}
           onChange={handleLevelChange}
         />
       </div>
