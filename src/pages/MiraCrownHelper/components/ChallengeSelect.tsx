@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import { challenges } from './mockData'; // Import the mock challenges
+import React from 'react';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setSelectedChallenge } from '../../../store/challengesSlice';
+import { challenges } from './mockData';
 
 const ChallengeSelect = () => {
-  const [selectedChallenge, setSelectedChallenge] = useState(challenges[0]); // Set the default challenge
+  const dispatch = useAppDispatch();
+  const selectedChallenge = useAppSelector(state => state.challenge.selectedChallenge);
 
-  // Handle the change when a user selects a challenge
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const challengeId = event.target.value;
-    const selected = challenges.find((challenge) => challenge.id === challengeId);
-    if (selected) {
-      setSelectedChallenge(selected);
-    }
+    dispatch(setSelectedChallenge(event.target.value));
   };
 
   return (

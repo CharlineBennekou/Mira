@@ -67,4 +67,6 @@ export const mockPieces: Piece[] = [
   new Piece("Shell Pendant", "Ocean Whisper", "Accessory", "Cool", 22, 25, 32, 14, 20, []),
   new Piece("Marine Ring", "Ocean Whisper", "Accessory", "Cool", 20, 22, 28, 12, 18, []),
   new Piece("Wave Hairpin", "Ocean Whisper", "Accessory", "Cool", 18, 20, 25, 10, 16, []),
+
+  new Piece("Test1", "Test", "Hair", "Cool", 210, 66, 90, 406, 77, []),
 ];
