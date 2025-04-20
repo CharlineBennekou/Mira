@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Piece } from '../../types/Piece';
+import { Piece } from '../types/Piece';
 
 interface SelectedPiece {
   piece: Piece;
@@ -17,12 +17,32 @@ const piecesSlice = createSlice({
   initialState,
   reducers: {
     setSelectedPiece(state, action: PayloadAction<{ slot: string; piece: Piece }>) {
-      state[action.payload.slot] = { piece: action.payload.piece, level: 0 };
+      const { slot, piece } = action.payload;
+
+      //converting the json piece to a Piece object
+      const hydratedPiece = new Piece(
+        piece.name,
+        piece.set,
+        piece.slot,
+        piece.mainstat,
+        piece.fresh,
+        piece.sweet,
+        piece.cool,
+        piece.sexy,
+        piece.elegant,
+        piece.tags
+      );
+
+      hydratedPiece.updateStats(0); // Ensure level 0 stats are set
+
+      state[slot] = { piece: hydratedPiece, level: 0 };
     },
+
     setPieceLevel(state, action: PayloadAction<{ slot: string; level: number }>) {
-      if (state[action.payload.slot]) {
-        state[action.payload.slot].level = action.payload.level;
-        state[action.payload.slot].piece.updateStats(action.payload.level);
+      const { slot, level } = action.payload;
+      if (state[slot]) {
+        state[slot].level = level;
+        state[slot].piece.updateStats(level);
       }
     },
   },

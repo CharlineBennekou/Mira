@@ -1,36 +1,35 @@
-// src/pages/MiraCrownHelper.tsx
 import React from 'react';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import ChallengeSelect from './components/ChallengeSelect';
 import PieceSelector from './components/PieceSelectors';
-import { mockPieces } from "./components/mockData";
+// import { mockPieces } from "./components/mockData"; // No longer needed
 import { Piece } from "../../types/Piece";
-
+import { useFetchPiecesQuery } from "../../store/piecesAPI";
 
 const MiraCrownHelper = () => {
-// Simplified slots. Updating this later.
-const mainSlots = [
-  "hair",
-  "dress",
-  "outerwear",
-  "socks",
-  "shoes"
-];
+  // Simplified slots. Updating this later.
+  const mainSlots = ["hair", "dress", "outerwear", "socks", "shoes"];
 
-// Simplified accessory slots. Updating this later.
-const accessorySlots = [
-  "accessory1",
-  "accessory2",
-  "accessory3",
-  "accessory4",
-  "accessory5"];
+  const accessorySlots = [
+    "accessory1",
+    "accessory2",
+    "accessory3",
+    "accessory4",
+    "accessory5",
+  ];
 
+  // Currently using data from json server
+  const { data: pieces = [], error, isLoading } = useFetchPiecesQuery();
+
+  // Helper to filter pieces by slot
   const getPiecesBySlot = (slot: string): Piece[] => {
-    return mockPieces.filter((p) => p.slot.toLowerCase() === slot.toLowerCase());
+    return pieces.filter((p) => p.slot.toLowerCase() === slot.toLowerCase());
   };
 
+  if (isLoading) return <div>Loading pieces...</div>;
+  if (error) return <div>Failed to load pieces.</div>;
 
- return (
+  return (
     <Box sx={{ p: 2 }}>
       {/* ChallengeSelect Box */}
       <Box sx={{ mb: 3 }}>
@@ -51,10 +50,7 @@ const accessorySlots = [
           {mainSlots.map((slot) => (
             <Grid item xs={12} md={6} key={slot}>
               <Paper sx={{ padding: 2 }}>
-                <PieceSelector
-                  slot={slot}
-                  pieces={getPiecesBySlot(slot)}
-                />
+                <PieceSelector slot={slot} pieces={getPiecesBySlot(slot)} />
               </Paper>
             </Grid>
           ))}
@@ -72,7 +68,9 @@ const accessorySlots = [
               <Paper sx={{ padding: 2 }}>
                 <PieceSelector
                   slot={`Accessory ${index + 1}`}
-                  pieces={mockPieces.filter((p) => p.slot.toLowerCase().includes("accessory"))}
+                  pieces={pieces.filter((p) =>
+                    p.slot.toLowerCase().includes("accessory")
+                  )}
                 />
               </Paper>
             </Grid>
@@ -82,4 +80,5 @@ const accessorySlots = [
     </Box>
   );
 };
+
 export default MiraCrownHelper;
