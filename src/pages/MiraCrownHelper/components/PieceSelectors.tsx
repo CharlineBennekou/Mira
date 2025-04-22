@@ -1,7 +1,17 @@
-import { useEffect } from 'react';
-import { Piece } from '../../../types/Piece';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setSelectedPiece, setPieceLevel } from '../../../store/piecesSlice';
+import { useEffect } from "react";
+import { Piece } from "../../../types/Piece";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { setSelectedPiece, setPieceLevel } from "../../../store/piecesSlice";
+import {
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  TextField,
+  Slider,
+  Typography,
+  Box,
+} from "@mui/material";
 
 interface PieceSelectorProps {
   slot: string;
@@ -10,7 +20,7 @@ interface PieceSelectorProps {
 
 const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
   const dispatch = useAppDispatch();
-  const selected = useAppSelector(state => state.pieces[slot]);
+  const selected = useAppSelector((state) => state.pieces[slot]);
 
   useEffect(() => {
     if (!selected && pieces.length > 0) {
@@ -19,7 +29,7 @@ const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
   }, [dispatch, pieces, selected, slot]);
 
   const handlePieceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedPiece = pieces.find(p => p.name === event.target.value);
+    const selectedPiece = pieces.find((p) => p.name === event.target.value);
     if (selectedPiece) {
       dispatch(setSelectedPiece({ slot, piece: selectedPiece }));
     }
@@ -35,16 +45,31 @@ const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
   if (!selected) return null;
 
   return (
-    <div>
+    <Box>
       <h2>{slot}</h2>
-      <select onChange={handlePieceChange} value={selected.piece.name}>
-        {pieces.map((piece) => (
-          <option key={piece.name} value={piece.name}>
-            {piece.name}
-          </option>
-        ))}
-      </select>
-      <div>
+
+      <FormControl fullWidth margin="normal">
+        <Select
+          labelId={`${slot}-label`}
+          value={selected.piece.name}
+          onChange={(event) => {
+            const selectedPiece = pieces.find(
+              (p) => p.name === event.target.value
+            );
+            if (selectedPiece) {
+              dispatch(setSelectedPiece({ slot, piece: selectedPiece }));
+            }
+          }}
+        >
+          {pieces.map((piece) => (
+            <MenuItem key={piece.name} value={piece.name}>
+              {piece.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <Box>
         <h3>{selected.piece.name}</h3>
         <p>Set: {selected.piece.set}</p>
         <p>Slot: {selected.piece.slot}</p>
@@ -56,15 +81,23 @@ const PieceSelector = ({ slot, pieces }: PieceSelectorProps) => {
         <p>Elegant: {selected.piece.elegant.toFixed(0)}</p>
         <p>Tags: {selected.piece.tags.join(", ") || "None"}</p>
         <p>Level: {selected.level}</p>
-        <input
-          type="number"
-          min="0"
-          max="11"
-          value={selected.level}
-          onChange={handleLevelChange}
-        />
-      </div>
-    </div>
+
+        <Box>
+          <Slider
+            value={selected.level}
+            onChange={(event, newValue) =>
+              dispatch(setPieceLevel({ slot, level: newValue as number }))
+            }
+            min={0}
+            max={11}
+            step={1}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => `Level ${value}`}
+            sx={{ mt: 2 }}
+          />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

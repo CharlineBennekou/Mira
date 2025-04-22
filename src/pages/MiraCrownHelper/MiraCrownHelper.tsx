@@ -8,14 +8,14 @@ import { useFetchPiecesQuery } from "../../store/piecesAPI";
 
 const MiraCrownHelper = () => {
   // Simplified slots. Updating this later.
-  const mainSlots = ["hair", "dress", "outerwear", "socks", "shoes"];
+  const mainSlots = ["Hair", "Dress", "Outerwear", "Socks", "Shoes"];
 
   const accessorySlots = [
-    "accessory1",
-    "accessory2",
-    "accessory3",
-    "accessory4",
-    "accessory5",
+    "Accessory1",
+    "Accessory2",
+    "Accessory3",
+    "Accessory4",
+    "Accessory5",
   ];
 
   // Currently using data from json server
