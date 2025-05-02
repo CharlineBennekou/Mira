@@ -5,6 +5,7 @@ import PieceSelector from './components/PieceSelectors';
 // import { mockPieces } from "./components/mockData"; // No longer needed
 import { Piece } from "../../types/Piece";
 import { useFetchPiecesQuery } from "../../store/piecesAPI";
+import TotalStatsDisplay from './components/TotalStatsDisplay';
 
 const MiraCrownHelper = () => {
   // Simplified slots. Updating this later.
@@ -77,6 +78,10 @@ const MiraCrownHelper = () => {
           ))}
         </Grid>
       </Box>
+      <Box sx={{ mb: 3,  }}>
+        <TotalStatsDisplay />
+      </Box>
+
     </Box>
   );
 };

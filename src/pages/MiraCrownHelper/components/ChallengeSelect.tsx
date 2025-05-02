@@ -52,6 +52,12 @@ const ChallengeSelect = () => {
           <strong>Tag:</strong> {selectedChallenge.tag || "No tag"}
         </p>
         <p>
+          <strong>Normal score:</strong> {selectedChallenge.normalscore || "N/A"}
+        </p>
+        <p>
+          <strong>Perfect score:</strong> {selectedChallenge.perfectscore || "N/A"}
+        </p>
+        <p>
           <strong>Notes:</strong> {selectedChallenge.notes}
         </p>
       </Box>
